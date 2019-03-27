@@ -176,6 +176,5 @@ public class GraphicalSort {
 
         System.out.println();
     }
-
-
+    
 }
