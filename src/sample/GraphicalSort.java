@@ -178,29 +178,19 @@ public class GraphicalSort {
     }
 
     public int[] selectionSort(int[] array, Pane pane){
-        //iterate over the array
-        //select the smallest element
-        //place it at the end of the sorted array
-
         this.pane = pane;
-
-        int temp;
         int minIndex=0;
 
         for(int i=0; i<array.length-1; i++)
         {
-            //set current element as minimum to compare it with other elements
             minIndex = i;
             for(int j=i+1; j<array.length; j++)
             {
-                //if current element is less than minimum element, set minimum = current
                 if(array[j] < array[minIndex])
                     minIndex = j;
             }
 
-            //swap the current element with the minimum element
             swap(i, minIndex, array);
-
 
             printArray(array);
         }
@@ -209,5 +199,98 @@ public class GraphicalSort {
         return array;
     }
 
+
+    public int[] heapsort(int[] array, Pane pane){
+
+        this.pane = pane;
+        int heapsize = array.length;
+
+        buildHeap(array);
+
+        for(int i=0; i<array.length; i++)
+            heapsize = deleteMax(array, heapsize);
+
+        sequentialTransition.play();
+        return array;
+    }
+
+    private int deleteMax(int[] array, int heapsize) {
+        swap(0, heapsize-1, array);
+        heapsize--;
+        maxHeapify(array, heapsize, 0);
+        return heapsize;
+    }
+
+    private int[] buildHeap(int[] array){
+        for(int i = array.length/2 -1; i>=0; i--)
+            maxHeapify(array, array.length, i);
+
+        return array;
+    }
+
+    private void maxHeapify(int[] array, int length, int i) {
+        int largest = i;
+        int left = 2*i + 1;
+        int right = 2*i +2;
+
+        if(left < length && array[left] > array[largest])
+            largest = left;
+
+        if(right < length && array[right] > array[largest])
+            largest = right;
+
+        if(largest != i)
+        {
+            swap(i, largest, array);
+            maxHeapify(array, length, largest);
+        }
+    }
+
+
+    public int[] quickSort(int[] array, int low, int high, Pane pane){
+
+        this.pane = pane;
+
+        //make sure that there is more than 1 element in subarray
+        if(low < high)
+        {
+            //partition the array to find the position of the pivot
+            int pivotIndex = partition(array, low, high);
+            //sort the left and right subarrays recursively
+            quickSort(array, low, pivotIndex-1, pane);
+            quickSort(array, pivotIndex+1, high, pane);
+        }
+
+        sequentialTransition.play();
+        return array;
+    }
+
+
+    private int partition(int[] array, int low, int high){
+
+        //let the last element be the pivot
+        int pivot = array[high];
+        int i = low-1;
+
+        //iterate from beginning to end-1 of subarray
+        for(int j=low; j<high; j++)
+        {
+            //place values lower than the pivot at the beginning of the array
+            //values greater than the pivot will be moved to the end of the array
+            printArray(array);
+
+            if(array[j] <= pivot)
+            {
+                i++;
+                swap(i, j, array);
+            }
+        }
+
+        //place the pivot in its correct position
+        swap(i+1, high, array);
+
+        //return the index of the pivot
+        return i+1;
+    }
 
 }

@@ -23,8 +23,8 @@ public class Controller {
     @FXML
     public void initialize() {
 
-//        int[] array = RandomArrays.generateRandomArray(10, 0, 100);
-        int[] array = {90,70,60,50,40,100,120,30,170,20};
+        int[] array = RandomArrays.generateRandomArray(10, 0, 100);
+//        int[] array = {90,70,60,50,40,100,120,30,170,20};
         GraphicalSort sort = new GraphicalSort();
 
         System.out.println("pane children size = " + pane.getChildren().size());
@@ -41,7 +41,8 @@ public class Controller {
             pane.getChildren().add(rectangle);
         }
 
-          sort.selectionSort(array, pane);
+          array = sort.quickSort(array, 0, array.length-1, pane);
+          sort.printArray(array);
 
     }
 
