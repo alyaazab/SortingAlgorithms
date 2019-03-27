@@ -22,7 +22,7 @@ public class GraphicalSort {
     private int getCurrentRectangle(int index){
         for (int k = 0; k < pane.getChildren().size(); k++) {
             Node node = pane.getChildren().get(k);
-            System.out.println("this node is a " + node.getId());
+
             if(node instanceof Rectangle) {
                 if(Integer.parseInt(node.getId())==index)
                 {
@@ -45,8 +45,8 @@ public class GraphicalSort {
         rect2 = (Rectangle) pane.getChildren().get(index2);
 
 
-        TranslateTransition tt1 = addPositiveTranslateTransition(rect1);
-        TranslateTransition tt2 = addNegativeTranslateTransition(rect2);
+        TranslateTransition tt1 = addPositiveTranslateTransition(rect1, i, j);
+        TranslateTransition tt2 = addNegativeTranslateTransition(rect2, i, j);
         FillTransition ft1 = addFillTransition(rect1);
         FillTransition ft2 = addFillTransition(rect2);
         FillTransition rft1 = removeFillTransition(rect1);
@@ -66,10 +66,10 @@ public class GraphicalSort {
     }
 
 
-    private TranslateTransition addPositiveTranslateTransition(Rectangle rectangle){
+    private TranslateTransition addPositiveTranslateTransition(Rectangle rectangle, int i, int j){
 
         TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.5), rectangle);
-        translateTransition.setByX(40);
+        translateTransition.setByX(40 * (j-i));
         translateTransition.setCycleCount(1);
         translateTransition.setAutoReverse(true);
 
@@ -77,10 +77,10 @@ public class GraphicalSort {
 
     }
 
-    private TranslateTransition addNegativeTranslateTransition(Rectangle rectangle){
+    private TranslateTransition addNegativeTranslateTransition(Rectangle rectangle, int i, int j){
 
         TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.5), rectangle);
-        translateTransition.setByX(-40);
+        translateTransition.setByX(-40 * (j-i));
         translateTransition.setCycleCount(1);
         translateTransition.setAutoReverse(true);
 
@@ -176,5 +176,38 @@ public class GraphicalSort {
 
         System.out.println();
     }
-    
+
+    public int[] selectionSort(int[] array, Pane pane){
+        //iterate over the array
+        //select the smallest element
+        //place it at the end of the sorted array
+
+        this.pane = pane;
+
+        int temp;
+        int minIndex=0;
+
+        for(int i=0; i<array.length-1; i++)
+        {
+            //set current element as minimum to compare it with other elements
+            minIndex = i;
+            for(int j=i+1; j<array.length; j++)
+            {
+                //if current element is less than minimum element, set minimum = current
+                if(array[j] < array[minIndex])
+                    minIndex = j;
+            }
+
+            //swap the current element with the minimum element
+            swap(i, minIndex, array);
+
+
+            printArray(array);
+        }
+        sequentialTransition.play();
+
+        return array;
+    }
+
+
 }

@@ -41,7 +41,7 @@ public class Controller {
             pane.getChildren().add(rectangle);
         }
 
-          sort.bubbleSort(array, pane);
+          sort.selectionSort(array, pane);
 
     }
 
