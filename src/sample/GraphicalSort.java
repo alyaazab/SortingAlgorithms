@@ -150,6 +150,8 @@ public class GraphicalSort {
                     removeFillTransitionB = removeFillTransition(rectangleB);
 
                     sequentialTransition.getChildren().add(new ParallelTransition(removeFillTransitionA, removeFillTransitionB));
+                    sequentialTransition.getChildren().add(new PauseTransition(Duration.seconds(0.5)));
+
 
                 }
 
