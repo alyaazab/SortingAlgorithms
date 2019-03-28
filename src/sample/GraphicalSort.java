@@ -261,7 +261,6 @@ public class GraphicalSort {
             quickSort(array, pivotIndex+1, high, pane);
         }
 
-//        sequentialTransition.play();
         return array;
     }
 
