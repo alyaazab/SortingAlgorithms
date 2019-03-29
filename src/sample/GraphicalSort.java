@@ -76,10 +76,10 @@ public class GraphicalSort {
 
     }
 
-    private TranslateTransition addYTranslateTransition(Rectangle rectangle){
+    private TranslateTransition addYTranslateTransition(Rectangle rectangle, int sign){
 
         TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.5), rectangle);
-        translateTransition.setByY(100);
+        translateTransition.setByY(sign*100);
         translateTransition.setCycleCount(1);
         translateTransition.setAutoReverse(true);
 
@@ -332,44 +332,53 @@ public class GraphicalSort {
     public int[] insertionSort(int[] array, Pane pane){
 
         this.pane = pane;
-        int element, j;
-        FillTransition ft;
         TranslateTransition tt;
-        Rectangle currentRectangle;
+        FillTransition ft, ft1;
+
+        //array = {7, 3, 5, 4, 8, 0, 9, 6, 1, 2}
+
+        //place the new element in sorted sub-array
+
+        int element = 0, j=0, temp=0;
+
+        ft = addFillTransition(getCurrentRectangle(0), Color.BLACK);
+        sequentialTransition.getChildren().add(ft);
 
 
         for(int i=1; i<array.length; i++)
         {
-            //let the first element be "sorted", color it black
-            ft = addFillTransition(getCurrentRectangle(i-1), Color.BLACK);
-            sequentialTransition.getChildren().add(ft);
-            sequentialTransition.getChildren().add(new PauseTransition(Duration.seconds(0.5)));
-
-            //color red the current element that we're looking for its home
             element = array[i];
-            currentRectangle = getCurrentRectangle(i);
-            ft = addFillTransition(currentRectangle, Color.RED);
-            //move it down a bit
-            tt = addYTranslateTransition(currentRectangle);
-            sequentialTransition.getChildren().add(new ParallelTransition(ft, tt));
 
             //to compare between array[i] and previous elements
             j=i-1;
+
+            ft = addFillTransition(getCurrentRectangle(j+1), Color.RED);
+            tt = addYTranslateTransition(getCurrentRectangle(j+1), 1);
+            sequentialTransition.getChildren().add(ft);
+            sequentialTransition.getChildren().add(tt);
 
             //make sure j is not out of bounds
             //as long as array[j] > element, we need to move the elements in sorted sub-array
             while(j>=0 && array[j]>element)
             {
-//                ft = addFillTransition(getCurrentRectangle(j), Color.GOLD);
-//                sequentialTransition.getChildren().add(ft);
+                ft = addFillTransition(getCurrentRectangle(j), Color.GOLD);
+                sequentialTransition.getChildren().add(ft);
+
                 //move current element 1 place over
-                array[j+1] = array[j];
+                // array[j+1] = array[j];
+                swap(j+1, j, array);
+
+                ft = addFillTransition(getCurrentRectangle(j+1), Color.BLACK);
+                sequentialTransition.getChildren().add(ft);
+
                 //decrement j to check the other elements in sorted sub-array
                 j--;
             }
 
-            //places the element in its correct position
-            array[j+1] = element;
+            tt = addYTranslateTransition(getCurrentRectangle(j+1), -1);
+            ft = addFillTransition(getCurrentRectangle(j+1), Color.BLACK);
+            sequentialTransition.getChildren().add(tt);
+            sequentialTransition.getChildren().add(ft);
 
             printArray(array);
         }
@@ -377,6 +386,8 @@ public class GraphicalSort {
         sequentialTransition.play();
         return array;
     }
+
+
 
 
 }
