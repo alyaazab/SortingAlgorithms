@@ -1,5 +1,6 @@
 package sample;
 
+
 public class Sort {
 
     public int[] quickSort(int[] array, int low, int high){
@@ -29,8 +30,6 @@ public class Sort {
         {
             //place values lower than the pivot at the beginning of the array
             //values greater than the pivot will be moved to the end of the array
-            printArray(array);
-
             if(array[j] <= pivot)
             {
                 i++;
@@ -84,7 +83,7 @@ public class Sort {
         //find the largest node between the parent and its children
         int largest = i;
         int left = 2*i + 1;
-        int right = 2*i +2;
+        int right = 2*i + 2;
 
         if(left < length && array[left] > array[largest])
             largest = left;

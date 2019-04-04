@@ -7,6 +7,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import javax.naming.ldap.Control;
+
 
 public class GraphicalSort {
 
@@ -93,7 +95,7 @@ public class GraphicalSort {
 
         FillTransition fillTransition = new FillTransition();
         fillTransition.setShape(rectangle);
-        fillTransition.setDuration(new Duration(500));
+        fillTransition.setDuration(new Duration(1000));
         fillTransition.setToValue(color);
         fillTransition.setCycleCount(1);
         fillTransition.setAutoReverse(true);
@@ -388,6 +390,90 @@ public class GraphicalSort {
     }
 
 
+    public int[] mergeSort(int[] array, int left, int right, Pane pane){
+
+        this.pane = pane;
+        //split the left side of the array until its size is 1
+        //go back recursively and split the right side of the array
+        if(left < right)
+        {
+            mergeSort(array, left, (left+right)/2, pane);
+            mergeSort(array, (left+right)/2 +1, right, pane);
+            merge(array, left, right);
+        }
+
+        return array;
+
+    }
+
+    private int[] merge(int[] array, int left, int right)
+    {
+        System.out.println("left = " + left + "     right = " + right);
+        int middle = (left+right)/2;
+        int[] array1 = new int[middle-left+1];
+        int[] array2 = new int[right-middle];
+        TranslateTransition tt;
+        FillTransition ft;
+
+
+
+        //move elements of array down
+
+
+        for(int i=left; i<=middle; i++)
+        {
+            array1[i-left] = array[i];
+//            ft = addFillTransition(getCurrentRectangle(i), Color.RED);
+//            sequentialTransition.getChildren().add(ft);
+            tt = addYTranslateTransition(getCurrentRectangle(i), 1);
+            sequentialTransition.getChildren().add(tt);
+        }
+
+        for(int i=middle+1; i<=right; i++) {
+            array2[i - middle - 1] = array[i];
+//            ft = addFillTransition(getCurrentRectangle(i), Color.BLACK);
+//            sequentialTransition.getChildren().add(ft);
+            tt = addYTranslateTransition(getCurrentRectangle(i), 1);
+            sequentialTransition.getChildren().add(tt);
+        }
+
+
+        int i=left, j=0, k=0;
+
+        while(j<array1.length && k<array2.length)
+        {
+            //move the smallest element up
+
+            if(array1[j] <= array2[k])
+            {
+                array[i] = array1[j];
+                j++;
+            } else {
+                array[i] = array2[k];
+                k++;
+            }
+            i++;
+        }
+
+        //move the other elements up
+        while(j<array1.length)
+        {
+
+            array[i] = array1[j];
+            i++;
+            j++;
+        }
+
+        while(k<array2.length)
+        {
+
+            array[i] = array2[k];
+            i++;
+            k++;
+        }
+
+        return array;
+    }
 
 
 }
