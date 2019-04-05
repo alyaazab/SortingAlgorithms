@@ -404,6 +404,9 @@ public class GraphicalSort {
     private int[] merge(int[] array, int left, int right)
     {
         System.out.println("left = " + left + "     right = " + right);
+        System.out.println("array is: ");
+        printArray(array);
+
         int middle = (left+right)/2;
         int[] array1 = new int[middle-left+1];
         int[] array2 = new int[right-middle];
@@ -411,40 +414,42 @@ public class GraphicalSort {
         FillTransition ft;
 
 
-
         //move elements of array down
-
-
         for(int i=left; i<=middle; i++)
         {
             array1[i-left] = array[i];
-//            ft = addFillTransition(getCurrentRectangle(i), Color.RED);
-//            sequentialTransition.getChildren().add(ft);
-            tt = addYTranslateTransition(getCurrentRectangle(i), 1);
-            sequentialTransition.getChildren().add(tt);
+            sequentialTransition.getChildren().add(addYTranslateTransition(getCurrentRectangle(i), 1));
         }
 
-        for(int i=middle+1; i<=right; i++) {
+        for(int i=middle+1; i<=right; i++)
+        {
             array2[i - middle - 1] = array[i];
-//            ft = addFillTransition(getCurrentRectangle(i), Color.BLACK);
-//            sequentialTransition.getChildren().add(ft);
-            tt = addYTranslateTransition(getCurrentRectangle(i), 1);
-            sequentialTransition.getChildren().add(tt);
+            sequentialTransition.getChildren().add(addYTranslateTransition(getCurrentRectangle(i), 1));
         }
 
+        System.out.println("leftarr is ");
+        printArray(array1);
+        System.out.println("rightarr is ");
+        printArray(array2);
 
         int i=left, j=0, k=0;
 
         while(j<array1.length && k<array2.length)
         {
             //move the smallest element up
-
             if(array1[j] <= array2[k])
             {
+                sequentialTransition.getChildren().add(addYTranslateTransition(getCurrentRectangle(j+left), -1));
+                sequentialTransition.getChildren().add(addXTranslateTransition(getCurrentRectangle(j+left), i, j+left, -1));
+
                 array[i] = array1[j];
+
                 j++;
             } else {
+                sequentialTransition.getChildren().add(addYTranslateTransition(getCurrentRectangle(k+middle+1), -1));
+                sequentialTransition.getChildren().add(addXTranslateTransition(getCurrentRectangle(k+middle+1), i, k+middle+1, -1));
                 array[i] = array2[k];
+
                 k++;
             }
             i++;
@@ -453,6 +458,11 @@ public class GraphicalSort {
         //move the other elements up
         while(j<array1.length)
         {
+            sequentialTransition.getChildren().add(addYTranslateTransition(getCurrentRectangle(j+left), -1));
+            sequentialTransition.getChildren().add(addXTranslateTransition(getCurrentRectangle(j+left), i, j+left, -1));
+            swapTwoNodes(j+left, i);
+            System.out.println("j = " + array1[j]);
+            System.out.println("j + left= " + array[j+left]);
 
             array[i] = array1[j];
             i++;
@@ -461,7 +471,11 @@ public class GraphicalSort {
 
         while(k<array2.length)
         {
-
+            sequentialTransition.getChildren().add(addYTranslateTransition(getCurrentRectangle(k+middle+1), -1));
+            sequentialTransition.getChildren().add(addXTranslateTransition(getCurrentRectangle(k+middle+1), i, k+middle+1, -1));
+            swapTwoNodes(k+middle+1, i);
+            System.out.println("k = " + array2[k]);
+            System.out.println("k + mid+1= " + array[k+middle+1]);
             array[i] = array2[k];
             i++;
             k++;

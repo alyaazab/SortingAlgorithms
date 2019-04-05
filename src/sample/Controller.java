@@ -21,7 +21,8 @@ public class Controller {
 
     }
 
-    int[] array;
+    int[] array = {70, 10, 20, 80, 30, 90, 60, 100};
+
 
 
     @FXML
@@ -75,7 +76,8 @@ public class Controller {
     }
 
     public void onBtnApplyClick(ActionEvent actionEvent) {
-        array = RandomArrays.generateRandomArray((int) spinnerArraySize.getValue(), 1, 100);
+//        array = RandomArrays.generateRandomArray((int) spinnerArraySize.getValue(), 1, 100);
+//        array = {70, 10, 20, 80, 30, 90, 60, 100};
         resetPane();
 
     }
