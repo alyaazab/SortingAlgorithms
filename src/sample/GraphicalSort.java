@@ -7,16 +7,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-import javax.naming.ldap.Control;
 
 
 public class GraphicalSort {
 
     SequentialTransition sequentialTransition = new SequentialTransition();
-
-
-    int index1 = 0, index2=0;
     Pane pane;
+    int index1 = 0, index2=0;
 
 
     private int getCurrentRectangleIndex(int index){
@@ -31,18 +28,14 @@ public class GraphicalSort {
 
 
     private Rectangle getCurrentRectangle(int i){
-
         int index = getCurrentRectangleIndex(i);
-
         return (Rectangle) pane.getChildren().get(index);
-
     }
 
     private void swap(int i, int j, int[] array) {
         int temp = array[i];
         array[i] = array[j];
         array[j] = temp;
-
 
         Rectangle rect1 = getCurrentRectangle(i);
         Rectangle rect2 = getCurrentRectangle(j);
@@ -69,7 +62,7 @@ public class GraphicalSort {
 
     private TranslateTransition addXTranslateTransition(Rectangle rectangle, int i, int j, int sign){
 
-        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.5), rectangle);
+        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.5/Controller.animationSpeed), rectangle);
         translateTransition.setByX(sign*40* (j-i));
         translateTransition.setCycleCount(1);
         translateTransition.setAutoReverse(true);
@@ -80,7 +73,7 @@ public class GraphicalSort {
 
     private TranslateTransition addYTranslateTransition(Rectangle rectangle, int sign){
 
-        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.5), rectangle);
+        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.5/Controller.animationSpeed), rectangle);
         translateTransition.setByY(sign*100);
         translateTransition.setCycleCount(1);
         translateTransition.setAutoReverse(true);
@@ -95,7 +88,7 @@ public class GraphicalSort {
 
         FillTransition fillTransition = new FillTransition();
         fillTransition.setShape(rectangle);
-        fillTransition.setDuration(new Duration(1000));
+        fillTransition.setDuration(Duration.seconds(1/Controller.animationSpeed));
         fillTransition.setToValue(color);
         fillTransition.setCycleCount(1);
         fillTransition.setAutoReverse(true);
@@ -107,8 +100,9 @@ public class GraphicalSort {
 
     public int[] bubbleSort(int[] array, Pane pane){
         Rectangle rectangleA, rectangleB;
-        FillTransition fillTransitionA, fillTransitionB, fillTransitionC, removeFillTransitionA, removeFillTransitionB;
+        FillTransition ft1, ft2, ft;
         this.pane = pane;
+
 
         for(int i=0; i<array.length-1; i++)
         {
@@ -116,27 +110,25 @@ public class GraphicalSort {
             {
                 rectangleA = getCurrentRectangle(j);
                 rectangleB = getCurrentRectangle(j+1);
-                fillTransitionA = addFillTransition(rectangleA, Color.GOLD);
-                fillTransitionB = addFillTransition(rectangleB, Color.GOLD);
-                sequentialTransition.getChildren().add(new ParallelTransition(fillTransitionA, fillTransitionB));
+                ft1 = addFillTransition(rectangleA, Color.GOLD);
+                ft2 = addFillTransition(rectangleB, Color.GOLD);
+                sequentialTransition.getChildren().add(new ParallelTransition(ft1, ft2));
 
                 if(array[j] > array[j+1])
                     swap(j, j+1, array);
 
-                removeFillTransitionA = addFillTransition(rectangleA, Color.BLUE);
-                removeFillTransitionB = addFillTransition(rectangleB, Color.BLUE);
-                sequentialTransition.getChildren().add(new PauseTransition(Duration.seconds(0.5)));
-                sequentialTransition.getChildren().add(new ParallelTransition(removeFillTransitionA, removeFillTransitionB));
-                sequentialTransition.getChildren().add(new PauseTransition(Duration.seconds(0.5)));
-
+                ft1 = addFillTransition(rectangleA, Color.BLUE);
+                ft2 = addFillTransition(rectangleB, Color.BLUE);
+                sequentialTransition.getChildren().add(new ParallelTransition(ft1, ft2));
+                sequentialTransition.getChildren().add(new PauseTransition(Duration.seconds(0.5/Controller.animationSpeed)));
             }
 
-            fillTransitionC = addFillTransition(getCurrentRectangle(array.length-i-1), Color.BLACK);
-            sequentialTransition.getChildren().add(fillTransitionC);
-            sequentialTransition.getChildren().add(new PauseTransition(Duration.seconds(0.5)));
+            ft = addFillTransition(getCurrentRectangle(array.length-i-1), Color.BLACK);
+            sequentialTransition.getChildren().add(ft);
+            sequentialTransition.getChildren().add(new PauseTransition(Duration.seconds(0.5/Controller.animationSpeed)));
         }
+        sequentialTransition.getChildren().add(addFillTransition(getCurrentRectangle(0), Color.BLACK));
 
-        sequentialTransition.play();
         return array;
     }
 
@@ -152,7 +144,7 @@ public class GraphicalSort {
     public int[] selectionSort(int[] array, Pane pane){
         this.pane = pane;
         int minIndex=0;
-        Rectangle rect, rect1, rect2;
+        Rectangle rect1, rect2;
         FillTransition ft1, ft2;
 
         for(int i=0; i<array.length-1; i++)
@@ -164,8 +156,9 @@ public class GraphicalSort {
                 //make minimum rect red
                 //make current rect yellow to compare with
                 rect1 = getCurrentRectangle(minIndex);
-                rect2 = getCurrentRectangle(j);
                 ft1 = addFillTransition(rect1, Color.RED);
+
+                rect2 = getCurrentRectangle(j);
                 ft2 = addFillTransition(rect2, Color.GOLD);
                 sequentialTransition.getChildren().add(new ParallelTransition(ft1, ft2));
                 sequentialTransition.getChildren().add(new PauseTransition(Duration.seconds(0.5)));
@@ -191,15 +184,17 @@ public class GraphicalSort {
 
             }
 
-            swap(i, minIndex, array);
-            ft1 = addFillTransition(getCurrentRectangle(i), Color.BLACK);
+            ft1 = addFillTransition(getCurrentRectangle(i), Color.RED);
             sequentialTransition.getChildren().add(ft1);
+            swap(i, minIndex, array);
+            ft1 = addFillTransition(getCurrentRectangle(minIndex), Color.BLUE);
+            ft2 = addFillTransition(getCurrentRectangle(i), Color.BLACK);
+            sequentialTransition.getChildren().add(new ParallelTransition(ft1, ft2));
+            sequentialTransition.getChildren().add(new PauseTransition(Duration.seconds(0.5/Controller.animationSpeed)));
 
             printArray(array);
         }
         sequentialTransition.getChildren().add(addFillTransition(getCurrentRectangle(array.length-1), Color.BLACK));
-        sequentialTransition.play();
-
         return array;
     }
 
@@ -214,7 +209,6 @@ public class GraphicalSort {
         for(int i=0; i<array.length; i++)
             heapsize = deleteMax(array, heapsize);
 
-        sequentialTransition.play();
         return array;
     }
 
@@ -292,6 +286,8 @@ public class GraphicalSort {
         int pivot = array[high];
         int i = low-1;
         FillTransition ft1, ft2;
+
+        sequentialTransition.getChildren().add(addFillTransition(getCurrentRectangle(high), Color.RED));
 
         //iterate from beginning to end-1 of subarray
         for(int j=low; j<high; j++)
@@ -385,7 +381,6 @@ public class GraphicalSort {
             printArray(array);
         }
 
-        sequentialTransition.play();
         return array;
     }
 
